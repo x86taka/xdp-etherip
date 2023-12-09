@@ -2,9 +2,23 @@
 #define XDP_PROG_H
 
 // vlan header
-struct vlan_hdr {
+struct vlan_hdr
+{
   __be16 h_vlan_TCI;
   __be16 h_vlan_encapsulated_proto;
+};
+
+// tcp options
+struct tcpopt
+{
+  __u8 kind;
+  __u8 len;
+};
+// EtherIP header
+struct etherip_hdr
+{
+  __u8 etherip_ver;
+  __u8 etherip_pad;
 };
 
 // cf.
@@ -21,7 +35,8 @@ struct vlan_hdr {
  *
  * I = VXLAN Network Identifier (VNI) present.
  */
-struct vxlanhdr {
+struct vxlanhdr
+{
   __be32 vx_flags;
   __be32 vx_vni;
 };
@@ -39,4 +54,4 @@ struct vxlanhdr {
 #define FDB_HASH_BITS 8
 #define FDB_HASH_SIZE (1 << FDB_HASH_BITS)
 
-#endif  // XDP_PROG_H
+#endif // XDP_PROG_H

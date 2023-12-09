@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LINUX_VERSION=5.15.15
+LINUX_VERSION=5.19
 
 wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${LINUX_VERSION}.tar.xz
 tar xf linux-${LINUX_VERSION}.tar.xz
