@@ -242,3 +242,6 @@ bpf_endian.h
 xdp_bpf.go
 xdp_bpf.o
 bin/*
+
+*.o
+xdp-etherip
