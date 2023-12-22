@@ -18,7 +18,7 @@ var payload = []byte{
 	0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
 }
 
-func generateInput(t *testing.T) []byte {
+func generateIPv4TCPInput(t *testing.T) []byte {
 	t.Helper()
 	opts := gopacket.SerializeOptions{FixLengths: true, ComputeChecksums: true}
 	iph := &layers.IPv4{
@@ -71,7 +71,7 @@ func generateInput(t *testing.T) []byte {
 	return buf.Bytes()
 }
 
-func generateOutput(t *testing.T) []byte {
+func generateIPv4TCPOutput(t *testing.T) []byte {
 
 	t.Helper()
 	opts := gopacket.SerializeOptions{FixLengths: true, ComputeChecksums: true}
@@ -184,7 +184,7 @@ func TestXDPProg(t *testing.T) {
 	}
 	defer objs.Close()
 
-	input := generateInput(t)
+	input := generateIPv4TCPInput(t)
 	xdpmd := XdpMd{
 		Data:           0,
 		DataEnd:        uint32(len(input)),
@@ -202,7 +202,7 @@ func TestXDPProg(t *testing.T) {
 	}
 
 	// check output
-	want := generateOutput(t)
+	want := generateIPv4TCPOutput(t)
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Logf("input: %x", input)
 		t.Logf("output: %x", got)
