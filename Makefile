@@ -1,11 +1,11 @@
-NAME := goxdp
+NAME := xdp-etherip
 
 #brunch name version
 VERSION := $(shell git rev-parse --abbrev-ref HEAD)
 
 PKG_NAME=$(shell basename `pwd`)
 
-LDFLAGS := -ldflags="-s -w  -X \"github.com/takehaya/goxdp-template/pkg/version.Version=$(VERSION)\" -extldflags \"-static\""
+LDFLAGS := -ldflags="-s -w  -X \"github.com/x86taka/xdp-etherip/pkg/version.Version=$(VERSION)\" -extldflags \"-static\""
 SRCS    := $(shell find . -type f -name '*.go')
 
 .DEFAULT_GOAL := build

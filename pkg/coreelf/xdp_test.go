@@ -11,7 +11,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-	"github.com/takehaya/goxdp-template/pkg/coreelf"
+	"github.com/x86taka/xdp-etherip/pkg/coreelf"
 )
 
 var payload = []byte{
