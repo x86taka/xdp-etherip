@@ -25,12 +25,12 @@ static __always_inline void update_checksum(uint16_t *csum, uint16_t old_val,
   *csum = (uint16_t)~new_csum_comp;
 }
 
-static __always_inline void update_tcp_mss(void *data, void *data_end,
-                                           int new_mss_int) {
+static __always_inline int update_tcp_mss(void *data, void *data_end,
+                                          int new_mss_int) {
   struct tcphdr *old_tcp_header;
   old_tcp_header = data;
   if (data + sizeof(struct tcphdr) > data_end) {
-    return XDP_ABORTED;
+    return 1;
   }
   // if SYN
   if (old_tcp_header->syn == 1) {
@@ -39,7 +39,7 @@ static __always_inline void update_tcp_mss(void *data, void *data_end,
   struct tcpopt *old_tcp_options;
   old_tcp_options = data;
   if (data + sizeof(struct tcpopt) > data_end) {
-    return XDP_ABORTED;
+    return 1;
   }
   // if MSS
   if (old_tcp_options->kind == 2 && old_tcp_options->len == 4) {
@@ -47,7 +47,7 @@ static __always_inline void update_tcp_mss(void *data, void *data_end,
     uint16_t *old_mss;
     old_mss = data;
     if (data + sizeof(uint16_t) > data_end) {
-      return XDP_ABORTED;
+      return 1;
     }
     uint16_t old_mss_value = *old_mss;
     // if old mss > new mss
@@ -59,6 +59,7 @@ static __always_inline void update_tcp_mss(void *data, void *data_end,
       update_checksum(&old_tcp_header->check, old_mss_value, new_mss);
     }
   }
+  return 0;
 }
 
 SEC("xdp")
@@ -201,8 +202,9 @@ int xdp_prog(struct xdp_md *ctx) {
       // if TCP
       if (old_ip_header->protocol == 6) {
         data += sizeof(struct iphdr);
-
-        update_tcp_mss(data, data_end, 1404);
+        if (update_tcp_mss(data, data_end, 1404)) {
+          return XDP_ABORTED;
+        }
       }
     }
     // if IPv6
@@ -216,7 +218,9 @@ int xdp_prog(struct xdp_md *ctx) {
       // if TCP
       if (old_ip6_header->nexthdr == 6) {
         data += sizeof(struct ipv6hdr);
-        update_tcp_mss(data, data_end, 1384);
+        if (update_tcp_mss(data, data_end, 1384) == 1) {
+          return XDP_ABORTED;
+        }
       }
     }
     bpf_redirect(2, 0);
