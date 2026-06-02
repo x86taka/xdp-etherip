@@ -2,7 +2,7 @@ module github.com/x86taka/xdp-etherip
 
 go 1.24.0
 
-toolchain go1.26.3
+toolchain go1.26.4
 
 require (
 	github.com/cilium/ebpf v0.21.0
